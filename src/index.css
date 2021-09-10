@@ -18,3 +18,7 @@ code {
 .animate-color {
   background-color: lightgreen;
 }
+
+.capital {
+  text-transform: capitalize;
+}

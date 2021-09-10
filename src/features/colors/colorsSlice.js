@@ -67,7 +67,11 @@ export const {
 } = colorSlice.actions;
 
 export const selectColors = ({ colors: { data, search } }) =>
-  search ? data.filter((item) => item.searchText.includes(search)) : data;
+  search
+    ? data.filter((item) =>
+        item.searchText.includes(search.trim().toLowerCase())
+      )
+    : data;
 export const selectColorsLoading = (state) => state.colors.loading;
 export const SelectShouldShowNewlyAddedRowFeedback = (state) =>
   state.colors.shouldShowNewlyAddedRowFeedback;

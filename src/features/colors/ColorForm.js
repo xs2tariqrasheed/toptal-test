@@ -20,7 +20,10 @@ const ColorForm = ({
 
   const { loading: updateLoading, func: updateColor } = useLoading(
     async (values) => {
-      await setDoc("/colors/" + colorToBeEdited.id, values);
+      await setDoc("/colors/" + colorToBeEdited.id, {
+        ...values,
+        createdAt: colorToBeEdited.createdAt,
+      });
       fetchColorList();
       message.success("Color updated successfully");
     }
@@ -54,7 +57,7 @@ const ColorForm = ({
           type="primary"
           htmlType="submit"
         >
-          Submit
+          {editMode ? "Save" : "Create"}
         </Button>
         <Button
           onClick={() => {

@@ -50,9 +50,11 @@ export const fetchDocs = async (collectionName) =>
       return {
         id: doc.id,
         ...data,
-        createdAt: data.createdAt
-          ? data.createdAt.toDate().toString()
-          : undefined,
+        createdAt: !(
+          typeof data.createdAt === "string" || data.createdAt instanceof String
+        )
+          ? data.createdAt?.toDate()?.toString()
+          : data.createdAt,
       };
     })
     .sort(getDateSorter("createdAt"))

@@ -59,6 +59,8 @@ export function Colors() {
   const onSearch = ({ target: { value } }) =>
     dispatch(setSearch({ search: value }));
 
+  const editMode = !!colorToBeEdited;
+
   return (
     <>
       {/* <pre>{visible.toString()}</pre> */}
@@ -68,7 +70,7 @@ export function Colors() {
         destroyOnClose
         onCancel={hideModal}
         visible={visible || !!colorToBeEdited}
-        title="Create new Color"
+        title={editMode ? "Update Color" : "Create new Color"}
         footer={null}
       >
         <ColorForm
@@ -85,7 +87,7 @@ export function Colors() {
           <>
             <Input
               suffix={<SearchOutlined />}
-              placeholder="input search text"
+              placeholder="Input search text"
               onChange={onSearch}
               style={{ width: 200, marginRight: 10 }}
             />
@@ -129,6 +131,7 @@ export function Colors() {
               dataIndex: "name",
               width: "40%",
               key: "name",
+              render: (value) => <span className="capital">{value}</span>,
             },
             {
               title: "Color",
