@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import logo from "./logo.svg";
 import { Counter } from "./features/counter/Counter";
-import { Colors } from "./features/colors/Colors";
+import Colors from "./features/Colors";
 import "./App.css";
 import { DatePicker } from "antd";
 import AppLayout from "./components/Layout";

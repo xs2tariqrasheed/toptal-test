@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
 import { fetchDocs } from "../../firebase";
 import { constructSearchText } from "../../utils/constructSearchText";
 
