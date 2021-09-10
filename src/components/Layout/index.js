@@ -60,7 +60,7 @@ class AppLayout extends React.Component {
             className="site-layout-background shadow"
             style={{
               margin: "24px 16px",
-              padding: 24,
+              //   padding: 24,
               minHeight: 280,
             }}
           >

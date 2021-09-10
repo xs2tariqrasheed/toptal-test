@@ -37,3 +37,15 @@
     transform: translateY(0px);
   }
 }
+
+.left-margin-10 {
+  margin-left: 10px;
+}
+
+.right-margin-10 {
+  margin-right: 10px;
+}
+
+.float-right {
+  float: right;
+}

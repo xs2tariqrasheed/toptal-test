@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import logo from "./logo.svg";
 import { Counter } from "./features/counter/Counter";
+import { Colors } from "./features/colors/Colors";
 import "./App.css";
 import { DatePicker } from "antd";
 import AppLayout from "./components/Layout";
+import { fetchDocs } from "./firebase";
 
 function App() {
+  useEffect(() => {
+    async function name(params) {
+      const a = await fetchDocs("bikes");
+      console.log(a);
+    }
+    name();
+  }, []);
+
   return (
     <Router>
+      <Colors />
       {/* <div className="App">
         <DatePicker />
         <header className="App-header">
@@ -73,7 +84,7 @@ function App() {
         <hr />
 
       </div> */}
-      <Switch>
+      {/* <Switch>
         <Route exact path="/">
           <Home />
         </Route>
@@ -83,7 +94,7 @@ function App() {
         <Route path="/dashboard">
           <Dashboard />
         </Route>
-      </Switch>
+      </Switch> */}
     </Router>
   );
 }
