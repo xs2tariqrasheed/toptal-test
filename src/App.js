@@ -19,8 +19,9 @@ function App() {
 
   return (
     <Router>
-      <Colors />
-      {/* <div className="App">
+      <AppLayout>
+        <Colors />
+        {/* <div className="App">
         <DatePicker />
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
@@ -84,7 +85,7 @@ function App() {
         <hr />
 
       </div> */}
-      {/* <Switch>
+        {/* <Switch>
         <Route exact path="/">
           <Home />
         </Route>
@@ -95,6 +96,7 @@ function App() {
           <Dashboard />
         </Route>
       </Switch> */}
+      </AppLayout>
     </Router>
   );
 }
@@ -118,9 +120,5 @@ function About() {
 }
 
 function Dashboard() {
-  return (
-    <AppLayout>
-      <h2>Dashboard</h2>
-    </AppLayout>
-  );
+  return <h2>Dashboard</h2>;
 }

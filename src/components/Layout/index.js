@@ -26,7 +26,7 @@ class AppLayout extends React.Component {
   render() {
     return (
       <Layout>
-        <Sider
+        {/* <Sider
           theme="light"
           className="sider"
           trigger={null}
@@ -45,7 +45,7 @@ class AppLayout extends React.Component {
               nav 3
             </Menu.Item>
           </Menu>
-        </Sider>
+        </Sider> */}
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }}>
             {React.createElement(

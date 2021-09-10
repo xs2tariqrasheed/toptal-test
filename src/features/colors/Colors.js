@@ -1,5 +1,5 @@
-import { Button, Card, message, Popconfirm, Table, Modal } from "antd";
-import { SyncOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Card, message, Popconfirm, Table, Modal, Input } from "antd";
+import { SyncOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -9,16 +9,22 @@ import {
   selectColorToBeEdited,
   setColorToBeEdited,
   unsetColorToBeEdited,
+  setSearch,
+  SelectShouldShowNewlyAddedRowFeedback,
+  setShouldShowNewlyAddedRowFeedback,
 } from "./colorsSlice";
-import AppLayout from "../../components/Layout";
 import useLoading from "../../hooks/useLoading";
 import { deleteDoc } from "../../firebase";
 import ColorForm from "./ColorForm";
+import showNewlyAddedRowFeedback from "../../utils/showNewlyAddedRowFeedback";
 
 export function Colors() {
   const colors = useSelector(selectColors);
   const listLoading = useSelector(selectColorsLoading);
   const colorToBeEdited = useSelector(selectColorToBeEdited);
+  const shouldShowNewlyAddedRowFeedback = useSelector(
+    SelectShouldShowNewlyAddedRowFeedback
+  );
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
 
@@ -38,14 +44,26 @@ export function Colors() {
     fetchColorList();
   }, []);
 
-  const hideModal = () =>
+  useEffect(() => {
+    if (shouldShowNewlyAddedRowFeedback) {
+      showNewlyAddedRowFeedback();
+      dispatch(setShouldShowNewlyAddedRowFeedback({ value: false }));
+    }
+  }, [dispatch, shouldShowNewlyAddedRowFeedback]);
+
+  const hideModal = () => {
+    setVisible(false);
     dispatch(unsetColorToBeEdited({ colorId: colorToBeEdited?.id }));
+  };
+
+  const onSearch = ({ target: { value } }) =>
+    dispatch(setSearch({ search: value }));
 
   return (
-    <AppLayout>
+    <>
       {/* <pre>{visible.toString()}</pre> */}
       {/* <pre>{JSON.stringify(colors, null, 2)}</pre> */}
-      <pre>{JSON.stringify(colorToBeEdited, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(colorToBeEdited, null, 2)}</pre> */}
       <Modal
         destroyOnClose
         onCancel={hideModal}
@@ -65,6 +83,12 @@ export function Colors() {
         title="Manage Colors"
         extra={
           <>
+            <Input
+              suffix={<SearchOutlined />}
+              placeholder="input search text"
+              onChange={onSearch}
+              style={{ width: 200, marginRight: 10 }}
+            />
             <Button
               disabled={listLoading}
               type="primary"
@@ -89,9 +113,15 @@ export function Colors() {
         }
       >
         <Table
+          rowClassName={(record, index) =>
+            index === 0 ? "newly-added-todo" : ""
+          }
+          pagination={{
+            hideOnSinglePage: true,
+            pageSize: 15,
+          }}
           rowKey="id"
           loading={listLoading || deleteLoading}
-          pagination={false}
           size="small"
           columns={[
             {
@@ -150,6 +180,6 @@ export function Colors() {
           dataSource={colors}
         />
       </Card>
-    </AppLayout>
+    </>
   );
 }

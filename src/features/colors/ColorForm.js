@@ -1,5 +1,5 @@
 import { Form, Input, Button, message } from "antd";
-import { setDoc } from "../../firebase";
+import { setDoc, serverTimestamp } from "../../firebase";
 import useLoading from "../../hooks/useLoading";
 import uuid from "../../utils/uuid";
 
@@ -21,7 +21,6 @@ const ColorForm = ({
   const { loading: updateLoading, func: updateColor } = useLoading(
     async (values) => {
       await setDoc("/colors/" + colorToBeEdited.id, values);
-      // unsetColorToBeEdited({ colorId: colorToBeEdited.id });
       fetchColorList();
       message.success("Color updated successfully");
     }
@@ -32,7 +31,7 @@ const ColorForm = ({
   const onFinish = (values) => {
     console.log("Success:", values);
     if (editMode) updateColor(values);
-    else createColor(values);
+    else createColor({ ...values, createdAt: serverTimestamp() });
   };
 
   const editMode = !!colorToBeEdited;
