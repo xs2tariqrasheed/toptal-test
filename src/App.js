@@ -14,13 +14,11 @@ import {
   signInWithEmailAndPassword,
   getDoc,
 } from "./firebase";
-import { deleteUser, login, registerUser } from "./utils/auth";
+import { deleteUser, login, registerUser, updateUser } from "./utils/auth";
 import { MANAGER } from "./constants";
 import { useDispatch } from "react-redux";
 
 function App() {
-  const dispatch = useDispatch();
-
   useEffect(() => {
     async function name(params) {
       // const a = await fetchDocs("bikes");
@@ -28,11 +26,22 @@ function App() {
 
       // const auth = getAuth();
       // registerUser({
-      //   email: "test4@bikes.com",
+      //   email: "test6@bikes.com",
       //   password: "admin123",
       //   type: MANAGER,
       //   firstName: "Tariq",
       //   lastName: "Rasheed",
+      // });
+      // updateUser({
+      //   oldEmail: "test5@bikes.com",
+      //   oldPassword: "admin123",
+      //   data: {
+      //     email: "test5updarted@bikes.com",
+      //     password: "admin123updated",
+      //     type: MANAGER,
+      //     firstName: "Tariqupdate ",
+      //     lastName: "Rasheed update",
+      //   },
       // });
       // deleteUser({
       //   email: "test4@bikes.com",

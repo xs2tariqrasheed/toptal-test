@@ -9,6 +9,8 @@ import {
   getDoc,
   deleteUser as _deleteUser,
   deleteDoc,
+  updateEmail,
+  updatePassword,
 } from "../firebase";
 export const registerUser = async (data) => {
   try {
@@ -53,6 +55,26 @@ export const deleteUser = async ({ email, password }) => {
     await signInWithEmailAndPassword(auth, email, password);
     await deleteDoc("/profiles/" + auth.currentUser.uid);
     await _deleteUser(auth.currentUser);
+
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    await signInWithEmailAndPassword(
+      auth,
+      currentUser.email,
+      currentUser.password
+    );
+    message.success("User deleted successfully!");
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+export const updateUser = async ({ oldEmail, oldPassword, data }) => {
+  try {
+    const auth = getAuth();
+    await signInWithEmailAndPassword(auth, oldEmail, oldEmail);
+    await updatePassword(auth.currentUser, data.password);
+    await updateEmail(auth.currentUser, data.email);
+
+    await setDoc("/profiles/" + auth.currentUser.uid, data);
 
     const currentUser = JSON.parse(localStorage.getItem("user"));
     await signInWithEmailAndPassword(
