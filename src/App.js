@@ -14,7 +14,7 @@ import {
   signInWithEmailAndPassword,
   getDoc,
 } from "./firebase";
-import { login, registerUser } from "./utils/auth";
+import { deleteUser, login, registerUser } from "./utils/auth";
 import { MANAGER } from "./constants";
 import { useDispatch } from "react-redux";
 
@@ -28,11 +28,15 @@ function App() {
 
       // const auth = getAuth();
       // registerUser({
-      //   email: "manage2@bikes.com",
+      //   email: "test4@bikes.com",
       //   password: "admin123",
       //   type: MANAGER,
       //   firstName: "Tariq",
       //   lastName: "Rasheed",
+      // });
+      // deleteUser({
+      //   email: "test4@bikes.com",
+      //   password: "admin123",
       // });
       // console.log(auth.currentUser, "***");
       // signInWithEmailAndPassword(auth, "test@test.com", "admin123")
@@ -47,13 +51,13 @@ function App() {
       //     const errorMessage = error.message;
       //   });
       try {
-        login(
-          {
-            email: "manage2@bikes.com",
-            password: "admin123",
-          },
-          dispatch
-        );
+        // login(
+        //   {
+        //     email: "manage2@bikes.com",
+        //     password: "admin123",
+        //   },
+        //   dispatch
+        // );
         // const data = await getDoc(
         //   "profiles",
         //   "6481701e-b8d4-4833-b890-d3ed32c005dc"

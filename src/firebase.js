@@ -20,6 +20,7 @@ export const _deleteDoc = require("firebase/firestore/lite").deleteDoc;
 export const serverTimestamp =
   require("firebase/firestore/lite").serverTimestamp;
 export const getAuth = require("firebase/auth").getAuth;
+export const deleteUser = require("firebase/auth").deleteUser;
 export const updateProfile = require("firebase/auth").updateProfile;
 export const signInWithEmailAndPassword =
   require("firebase/auth").signInWithEmailAndPassword;
