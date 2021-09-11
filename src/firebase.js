@@ -11,13 +11,20 @@ const initializeApp = firebase.initializeApp;
 const getFirestore = require("firebase/firestore/lite").getFirestore;
 export const collection = require("firebase/firestore/lite").collection;
 export const getDocs = require("firebase/firestore/lite").getDocs;
+export const _getDoc = require("firebase/firestore/lite").getDoc;
 export const _setDoc = require("firebase/firestore/lite").setDoc;
+export const query = require("firebase/firestore/lite").query;
+export const where = require("firebase/firestore/lite").where;
 export const doc = require("firebase/firestore/lite").doc;
 export const _deleteDoc = require("firebase/firestore/lite").deleteDoc;
 export const serverTimestamp =
   require("firebase/firestore/lite").serverTimestamp;
-// console.log(doc, '???');
-// import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+export const getAuth = require("firebase/auth").getAuth;
+export const updateProfile = require("firebase/auth").updateProfile;
+export const signInWithEmailAndPassword =
+  require("firebase/auth").signInWithEmailAndPassword;
+export const createUserWithEmailAndPassword =
+  require("firebase/auth").createUserWithEmailAndPassword;
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -39,6 +46,24 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 // const analytics = getAnalytics(app);
 // export const db = getDatabase(app);
+
+export const getDoc = async (collectionName, id) =>
+  (await _getDoc(doc(db, collectionName, id))).data();
+
+export const getByUniqueField = async (collectionName, fieldName, value) => {
+  const q = query(
+    collection(db, collectionName),
+    where(fieldName, "==", value)
+  );
+  let data = null;
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    // console.log(doc.id, " => ", doc.data());
+    data = doc.data();
+  });
+  return data;
+};
 
 export const setDoc = async (path, data) => await _setDoc(doc(db, path), data);
 export const deleteDoc = async (path) => await _deleteDoc(doc(db, path));
