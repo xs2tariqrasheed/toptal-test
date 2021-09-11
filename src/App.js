@@ -1,173 +1,87 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import logo from "./logo.svg";
-import { Counter } from "./features/counter/Counter";
+import { useHistory } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import Colors from "./features/Colors";
 import "./App.css";
-import { DatePicker } from "antd";
 import AppLayout from "./components/Layout";
-import {
-  fetchDocs,
-  createUserWithEmailAndPassword,
-  getAuth,
-  updateProfile,
-  signInWithEmailAndPassword,
-  getDoc,
-} from "./firebase";
-import { deleteUser, login, registerUser, updateUser } from "./utils/auth";
-import { MANAGER } from "./constants";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { selectUser } from "./features/App/appSlice";
+import { getAuth } from "@firebase/auth";
+import Login from "./features/Login";
+import sleep from "./utils/sleep";
+import SignUp from "./features/SignUp";
 
-function App() {
+function App(props) {
+  const user = useSelector(selectUser);
+  const history = useHistory();
+  const auth = getAuth();
+
   useEffect(() => {
-    async function name(params) {
-      // const a = await fetchDocs("bikes");
-      // console.log(a);
-
+    async function _(params) {
       // const auth = getAuth();
-      // registerUser({
-      //   email: "test6@bikes.com",
-      //   password: "admin123",
-      //   type: MANAGER,
-      //   firstName: "Tariq",
-      //   lastName: "Rasheed",
-      // });
-      // updateUser({
-      //   oldEmail: "test5@bikes.com",
-      //   oldPassword: "admin123",
-      //   data: {
-      //     email: "test5updarted@bikes.com",
-      //     password: "admin123updated",
-      //     type: MANAGER,
-      //     firstName: "Tariqupdate ",
-      //     lastName: "Rasheed update",
-      //   },
-      // });
-      // deleteUser({
-      //   email: "test4@bikes.com",
-      //   password: "admin123",
-      // });
-      // console.log(auth.currentUser, "***");
-      // signInWithEmailAndPassword(auth, "test@test.com", "admin123")
-      //   .then((userCredential) => {
-      //     // Signed in
-      //     const user = userCredential.user;
-      //     console.log(user, "????");
-      //     // ...
-      //   })
-      //   .catch((error) => {
-      //     const errorCode = error.code;
-      //     const errorMessage = error.message;
-      //   });
-      try {
-        // login(
-        //   {
-        //     email: "manage2@bikes.com",
-        //     password: "admin123",
-        //   },
-        //   dispatch
-        // );
-        // const data = await getDoc(
-        //   "profiles",
-        //   "6481701e-b8d4-4833-b890-d3ed32c005dc"
-        // );
-        // console.log(data, "data");
-        // await createUserWithEmailAndPassword(auth, "test@test.com", "admin123");
-        // await signInWithEmailAndPassword(auth, "test@test.com", "admin123");
-        // await updateProfile(auth.currentUser, {
-        //   displayName: "Jane Q. User",
-        //   photoURL: "https://example.com/jane-q-user/profile.jpg",
-        // });
-        // console.log(auth.currentUser, "currentUser");
-      } catch (error) {
-        console.log(error.message);
-      }
-
-      //
-      // createUserWithEmailAndPassword(auth, "test@test.com", "admin123")
-      //   .then((userCredential) => {
-      //     // Signed in
-      //     const user = userCredential.user;
-      //     console.log(user, "????");
-      //     // ...
-      //   })
-      //   .catch((error) => {
-      //     const errorCode = error.code;
-      //     const errorMessage = error.message;
-      //     console.log(error, errorMessage);
-      //     // ..
-      //   });
+      await sleep(2000);
+      console.log(auth.currentUser, "??? test");
     }
-    name();
-  }, []);
+    _();
+  }, [auth]);
+
+  useEffect(() => {
+    console.log(props, "??? history");
+  }, [props]);
+
+  console.log(user, "????");
+
+  if (!user) {
+    // if (
+    //   history.location.pathname !== "/auth/login" ||
+    //   history.location.pathname !== "/auth/register"
+    // ) {
+    //   return (
+    //     <Redirect
+    //       to={{
+    //         pathname: "/auth/login",
+    //       }}
+    //     />
+    //   );
+    // }
+    return (
+      <Router>
+        <Switch>
+          <Route exact path="/auth/login">
+            <Login />
+          </Route>
+          <Route exact path="/auth/register">
+            <SignUp />
+          </Route>
+          <Route
+            path="/"
+            render={({ location }) =>
+              location.pathname !== "/auth/login" ||
+              location.pathname !== "/auth/register" ? (
+                <Redirect
+                  to={{
+                    pathname: "/auth/login",
+                  }}
+                />
+              ) : null
+            }
+          />
+        </Switch>
+      </Router>
+    );
+  }
 
   return (
     <Router>
       <AppLayout>
         <Colors />
         {/* <div className="App">
-        <DatePicker />
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <Counter />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <span>
-            <span>Learn </span>
-            <a
-              className="App-link"
-              href="https://reactjs.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              React
-            </a>
-            <span>, </span>
-            <a
-              className="App-link"
-              href="https://redux.js.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Redux
-            </a>
-            <span>, </span>
-            <a
-              className="App-link"
-              href="https://redux-toolkit.js.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Redux Toolkit
-            </a>
-            ,<span> and </span>
-            <a
-              className="App-link"
-              href="https://react-redux.js.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              React Redux
-            </a>
-          </span>
-        </header>
-      </div>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-        </ul>
-
-        <hr />
-
       </div> */}
         {/* <Switch>
         <Route exact path="/">

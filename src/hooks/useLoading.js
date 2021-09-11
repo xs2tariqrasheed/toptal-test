@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-const useLoading = (func, initialValue = false) => {
+const useLoading = (func, initialValue = false, remainTrue = false) => {
   const [loading, setLoading] = useState(initialValue);
   return {
     func: async function () {
       setLoading(true);
       await func.apply(this, arguments);
-      setLoading(false);
+      if (!remainTrue) setLoading(false);
     },
     loading,
   };

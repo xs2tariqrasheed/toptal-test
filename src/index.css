@@ -22,3 +22,11 @@ code {
 .capital {
   text-transform: capitalize;
 }
+
+.shadow {
+  box-shadow: 1px 1px 3px 2px #aaaaaa;
+}
+
+.pull-right {
+  float: right;
+}
