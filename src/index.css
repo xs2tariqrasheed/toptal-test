@@ -27,6 +27,11 @@ code {
   box-shadow: 1px 1px 3px 2px #aaaaaa;
 }
 
-.pull-right {
+.pull-right,
+.float-right {
   float: right;
+}
+
+.right-margin-10 {
+  margin-right: 10px;
 }
