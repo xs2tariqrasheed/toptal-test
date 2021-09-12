@@ -1,13 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
+
 import app from "../features/App/appSlice";
-import locations from "../features/Locations/locationsSlice";
 import colors from "../features/Colors/colorsSlice";
+import models from "../features/Models/modelsSlice";
+import locations from "../features/Locations/locationsSlice";
+import counterReducer from "../features/counter/counterSlice";
 
 export const store = configureStore({
   reducer: {
     app,
     colors,
+    models,
     locations,
     counter: counterReducer,
   },

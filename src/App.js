@@ -16,6 +16,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import Locations from "./features/Locations";
+import Models from "./features/Models";
 
 function App() {
   const dispatch = useDispatch();
@@ -77,6 +78,9 @@ function App() {
           </Route>
           <Route path="/admin/colors">
             <Colors />
+          </Route>
+          <Route path="/admin/models">
+            <Models />
           </Route>
           <Route path="/admin/locations">
             <Locations />
