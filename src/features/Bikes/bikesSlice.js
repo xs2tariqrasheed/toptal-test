@@ -30,6 +30,14 @@ export const bikesSlice = createSlice({
     setSearch: (state, { payload: { search } }) => {
       state.search = search;
     },
+    setBikeToBeBooked: (state, { payload: { bikeId } }) => {
+      const index = state.data.findIndex((item) => item.id === bikeId);
+      state.data[index].shouldBook = true;
+    },
+    unsetBikeToBeBooked: (state, { payload: { bikeId } }) => {
+      const index = state.data.findIndex((item) => item.id === bikeId);
+      if (index >= 0) state.data[index].shouldBook = false;
+    },
     setShouldShowNewlyAddedRowFeedback: (state, { payload: { value } }) => {
       state.shouldShowNewlyAddedRowFeedback = value;
     },
@@ -65,6 +73,8 @@ export const {
   unsetBikeToBeEdited,
   setSearch,
   setShouldShowNewlyAddedRowFeedback,
+  setBikeToBeBooked,
+  unsetBikeToBeBooked,
 } = bikesSlice.actions;
 
 export const selectBikes = ({ bikes: { data, search } }) =>
@@ -78,5 +88,7 @@ export const selectShouldShowNewlyAddedRowFeedback = (state) =>
   state.bikes.shouldShowNewlyAddedRowFeedback;
 export const selectBikeToBeEdited = (state) =>
   state.bikes.data.find((item) => item.shouldEdit);
+export const selectBikeToBeBooked = (state) =>
+  state.bikes.data.find((item) => item.shouldBook);
 
 export default bikesSlice.reducer;
