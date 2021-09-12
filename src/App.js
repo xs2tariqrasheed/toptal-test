@@ -20,7 +20,7 @@ import Models from "./features/Models";
 import Bikes from "./features/Bikes";
 import { MANAGER, REGULAR } from "./constants";
 import Users from "./features/Users";
-import Bookings from "./features/Bookings";
+import Bookings from "./features/BikesWithBookings";
 
 function App() {
   const dispatch = useDispatch();
@@ -80,33 +80,45 @@ function App() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/admin/colors">
-            <Colors />
-          </Route>
-          <Route path="/admin/models">
-            <Models />
-          </Route>
-          <Route path="/admin/bikes">
-            <Bikes />
-          </Route>
-          <Route path="/admin/locations">
-            <Locations />
-          </Route>{" "}
-          <Route path="/admin/bookings">
-            <Bookings />
-          </Route>
-          <Route path="/admin/users/regular">
-            <Users userType={REGULAR} />
-          </Route>
-          <Route path="/admin/users/manager">
-            <Users userType={MANAGER} />
-          </Route>
-          <Route path="/bikes">
-            <Bikes />
-          </Route>
-          <Route path="/bookings">
-            <Bookings />
-          </Route>
+          {user.type === MANAGER ? (
+            <>
+              <Route path="/admin/colors">
+                <Colors />
+              </Route>
+              <Route path="/admin/models">
+                <Models />
+              </Route>
+              <Route path="/admin/bikes">
+                <Bikes />
+              </Route>
+              <Route path="/admin/locations">
+                <Locations />
+              </Route>{" "}
+              <Route path="/admin/bookings">
+                <Bookings />
+              </Route>
+              <Route path="/admin/users/regular">
+                <Users userType={REGULAR} />
+              </Route>
+              <Route path="/admin/users/manager">
+                <Users userType={MANAGER} />
+              </Route>
+            </>
+          ) : (
+            ""
+          )}
+          {user.type === REGULAR ? (
+            <>
+              <Route path="/bikes">
+                <Bikes />
+              </Route>
+              <Route path="/bookings">
+                <Bookings userId={user.userId} />
+              </Route>
+            </>
+          ) : (
+            ""
+          )}
           <Route path="/" render={({ location }) => "404"} />
         </Switch>
       </AppLayout>

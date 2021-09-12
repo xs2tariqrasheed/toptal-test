@@ -7,6 +7,7 @@ import {
   Button,
   Form,
   DatePicker,
+  Select,
 } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -82,6 +83,11 @@ function Bikes({ userId }) {
   const colorListLoading = useSelector(selectColorsLoading);
 
   const [visible, setVisible] = useState(false);
+
+  // filters
+  const [modelIdFilter, setModelIdFilter] = useState(null);
+  const [colorIdFilter, setColorIdFilter] = useState(null);
+  const [locationIdFilter, setLocationIdFilter] = useState(null);
 
   const { loading: deleteLoading, func: deleteBike } = useLoading(
     async (id) => {
@@ -201,94 +207,172 @@ function Bikes({ userId }) {
               </Form.Item>
             </Form>
           </Modal>
-          <List
-            grid={{ gutter: 16, column: 4 }}
-            dataSource={bikeList.filter((item) => item.available)}
-            renderItem={(item) => (
-              <List.Item>
-                <Card
-                  title={item.name}
-                  extra={
-                    <Button
-                      onClick={() =>
-                        dispatch(setBikeToBeBooked({ bikeId: item.id }))
-                      }
+          <TableCard
+            hideCreateBtn
+            title="Bikes"
+            onSearch={onSearch}
+            loading={listLoading || dataLoading}
+            onCreateClick={() => {
+              setVisible(true);
+            }}
+            onRefreshClick={() => {
+              fetchBikeList();
+            }}
+            extra={
+              <>
+                <Select
+                  onSelect={(modelId) => setModelIdFilter(modelId)}
+                  onClear={() => setModelIdFilter(null)}
+                  dropdownMatchSelectWidth={false}
+                  style={{ width: 150, marginRight: 10 }}
+                  placeholder="Model"
+                  options={modelList.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  }))}
+                  allowClear
+                />
+                <Select
+                  onSelect={(colorId) => setColorIdFilter(colorId)}
+                  onClear={() => setColorIdFilter(null)}
+                  dropdownMatchSelectWidth={false}
+                  style={{ width: 150, marginRight: 10 }}
+                  placeholder="Color"
+                  options={colorList.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  }))}
+                  allowClear
+                />
+                <Select
+                  onSelect={(locationId) => setLocationIdFilter(locationId)}
+                  onClear={() => setLocationIdFilter(null)}
+                  dropdownMatchSelectWidth={false}
+                  style={{ width: 150, marginRight: 10 }}
+                  placeholder="Location"
+                  options={locationList.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  }))}
+                  allowClear
+                />
+              </>
+            }
+          >
+            <List
+              loading={listLoading || dataLoading}
+              grid={{ gutter: 16, column: 4 }}
+              dataSource={(() => {
+                let list = bikeList.filter((item) => item.available);
+                if (modelIdFilter) {
+                  list = bikeList.filter(
+                    (item) => item.model.id === modelIdFilter
+                  );
+                }
+                if (colorIdFilter) {
+                  list = bikeList.filter(
+                    (item) => item.color.id === colorIdFilter
+                  );
+                }
+                if (locationIdFilter) {
+                  list = bikeList.filter(
+                    (item) => item.location.id === locationIdFilter
+                  );
+                }
+                return list;
+              })()}
+              renderItem={(item) => (
+                <List.Item>
+                  <Card
+                    title={item.name}
+                    extra={
+                      <Button
+                        onClick={() =>
+                          dispatch(setBikeToBeBooked({ bikeId: item.id }))
+                        }
+                        size="small"
+                        type="primary"
+                      >
+                        Book
+                      </Button>
+                    }
+                  >
+                    <List
                       size="small"
-                      type="primary"
-                    >
-                      Book
-                    </Button>
-                  }
-                >
-                  <List
-                    size="small"
-                    header={null}
-                    footer={null}
-                    bordered
-                    dataSource={[
-                      `${item?.color?.name} Color`,
-                      `${item?.model?.name} Model`,
-                      `${item?.location?.name} Location`,
-                    ]}
-                    renderItem={(item) => <List.Item>{item}</List.Item>}
-                  />
-                </Card>
-              </List.Item>
-            )}
-          />
+                      header={null}
+                      footer={null}
+                      bordered
+                      dataSource={[
+                        `${item?.color?.name} Color`,
+                        `${item?.model?.name} Model`,
+                        `${item?.location?.name} Location`,
+                      ]}
+                      renderItem={(item) => <List.Item>{item}</List.Item>}
+                    />
+                  </Card>
+                </List.Item>
+              )}
+            />
+          </TableCard>
         </>
       ) : (
         ""
       )}
       {/* manager */}
-      <Modal
-        destroyOnClose
-        onCancel={hideModal}
-        visible={visible || !!bikeToBeEdited}
-        title={editMode ? "Update Bike" : "Create new Bike"}
-        footer={null}
-      >
-        <BikeForm
-          colorList={colorList}
-          locationList={locationList}
-          modelList={modelList}
-          fetchBikeList={fetchBikeList}
-          unsetBikeToBeEdited={hideModal}
-          bikeToBeEdited={bikeToBeEdited}
-          setVisible={setVisible}
-        />
-      </Modal>
-      <TableCard
-        hideCreateBtn={!!userId}
-        title="Manage Bikes"
-        onSearch={onSearch}
-        loading={listLoading || dataLoading}
-        onCreateClick={() => {
-          setVisible(true);
-        }}
-        onRefreshClick={() => {
-          fetchBikeList();
-        }}
-      >
-        <Table
-          rowClassName={(record, index) =>
-            index === 0 ? "newly-added-todo" : ""
-          }
-          pagination={{
-            hideOnSinglePage: true,
-            pageSize: 15,
-          }}
-          rowKey="id"
-          loading={listLoading || deleteLoading}
-          size="small"
-          columns={getBikesColumns({
-            setBikeToBeEdited,
-            dispatch,
-            deleteBike,
-          })}
-          dataSource={bikeList}
-        />
-      </TableCard>
+      {user.type === MANAGER ? (
+        <>
+          <Modal
+            destroyOnClose
+            onCancel={hideModal}
+            visible={visible || !!bikeToBeEdited}
+            title={editMode ? "Update Bike" : "Create new Bike"}
+            footer={null}
+          >
+            <BikeForm
+              colorList={colorList}
+              locationList={locationList}
+              modelList={modelList}
+              fetchBikeList={fetchBikeList}
+              unsetBikeToBeEdited={hideModal}
+              bikeToBeEdited={bikeToBeEdited}
+              setVisible={setVisible}
+            />
+          </Modal>
+          <TableCard
+            hideCreateBtn={!!userId}
+            title="Manage Bikes"
+            onSearch={onSearch}
+            loading={listLoading || dataLoading}
+            onCreateClick={() => {
+              setVisible(true);
+            }}
+            onRefreshClick={() => {
+              fetchBikeList();
+            }}
+          >
+            <Table
+              rowClassName={(record, index) =>
+                index === 0 ? "newly-added-todo" : ""
+              }
+              pagination={{
+                hideOnSinglePage: true,
+                pageSize: 15,
+              }}
+              rowKey="id"
+              loading={listLoading || deleteLoading}
+              size="small"
+              columns={getBikesColumns({
+                setBikeToBeEdited,
+                dispatch,
+                deleteBike,
+              })}
+              dataSource={bikeList}
+            />
+          </TableCard>
+        </>
+      ) : (
+        ""
+      )}
     </>
   );
 }
