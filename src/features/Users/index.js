@@ -89,7 +89,6 @@ function Users({ userType }) {
   };
 
   let usersList = users;
-  console.log(userType === REGULAR && onlyWithBookings, onlyWithBookings);
   if (userType === REGULAR && onlyWithBookings) {
     usersList = usersList.filter((user) =>
       bookings.some((b) => b.renterId === user.userId)
@@ -149,7 +148,7 @@ function Users({ userType }) {
             )}
             <Radio.Group
               style={{ marginRight: 10 }}
-              defaultValue={userType}
+              value={userType}
               onChange={({ target: { value } }) =>
                 history.push("/admin/users/" + value)
               }

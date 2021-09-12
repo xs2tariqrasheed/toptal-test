@@ -101,6 +101,12 @@ function App() {
           <Route path="/admin/users/manager">
             <Users userType={MANAGER} />
           </Route>
+          <Route path="/bikes">
+            <Bikes />
+          </Route>
+          <Route path="/bookings">
+            <Bookings />
+          </Route>
           <Route path="/" render={({ location }) => "404"} />
         </Switch>
       </AppLayout>
@@ -112,7 +118,7 @@ export default App;
 
 function Home() {
   return (
-    <div>
+    <div textAlign="center">
       <h2>Home</h2>
     </div>
   );
