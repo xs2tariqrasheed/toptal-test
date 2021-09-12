@@ -1,4 +1,4 @@
-import { Table, DatePicker } from "antd";
+import { Table, DatePicker, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
@@ -32,6 +32,8 @@ import {
   selectBookings,
   selectBookingsLoading,
 } from "../Bookings/bookingsSlice";
+import useLoading from "../../hooks/useLoading";
+import { deleteDoc, setDoc } from "../../firebase";
 
 const { RangePicker } = DatePicker;
 
@@ -61,6 +63,22 @@ function Bikes({ userId }) {
   const bookingsLoading = useSelector(selectBookingsLoading);
 
   const [dateFilter, setDateFilter] = useState(["", ""]);
+
+  const { loading: cancelLoading, func: cancelBooking } = useLoading(
+    async (data) => {
+      await deleteDoc("/bookings/" + data.id);
+      await setDoc("/bikes/" + data.bike.id, {
+        available: true,
+        name: data.bike.name,
+        modelId: data.bike.model.id,
+        locationId: data.bike.location.id,
+        colorId: data.bike.color.id,
+        createdAt: data.bike.createdAt,
+      });
+      message.success("Booking is cancelled successfully.");
+      fetchBikeList();
+    }
+  );
 
   function fetchBikeList() {
     dispatch(fetchModels());
@@ -133,9 +151,9 @@ function Bikes({ userId }) {
             pageSize: 15,
           }}
           rowKey="id"
-          loading={listLoading}
+          loading={listLoading || cancelLoading}
           size="small"
-          columns={getBikesColumns({})}
+          columns={getBikesColumns({ user, cancelBooking })}
           dataSource={bookingList.filter((item) => item.renterId === userId)}
         />
       </TableCard>
