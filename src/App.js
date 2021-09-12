@@ -17,6 +17,7 @@ import {
 } from "react-router-dom";
 import Locations from "./features/Locations";
 import Models from "./features/Models";
+import Bikes from "./features/Bikes";
 
 function App() {
   const dispatch = useDispatch();
@@ -81,6 +82,9 @@ function App() {
           </Route>
           <Route path="/admin/models">
             <Models />
+          </Route>
+          <Route path="/admin/bikes">
+            <Bikes />
           </Route>
           <Route path="/admin/locations">
             <Locations />
