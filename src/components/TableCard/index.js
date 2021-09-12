@@ -2,7 +2,15 @@ import { Button, Card, Input } from "antd";
 import { SyncOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 
 function TableCard(props) {
-  const { title, onSearch, loading, onCreateClick, onRefreshClick } = props;
+  const {
+    title,
+    onSearch,
+    loading,
+    onCreateClick,
+    onRefreshClick,
+    hideCreateBtn,
+    extra,
+  } = props;
 
   return (
     <Card
@@ -10,6 +18,7 @@ function TableCard(props) {
       title={title}
       extra={
         <>
+          {extra ? extra : ""}
           <Input
             suffix={<SearchOutlined />}
             placeholder="Input search text"
@@ -24,14 +33,18 @@ function TableCard(props) {
           >
             <SyncOutlined spin={loading} /> Refresh
           </Button>
-          <Button
-            style={{ marginLeft: 10 }}
-            disabled={loading}
-            type="primary"
-            onClick={onCreateClick}
-          >
-            <PlusOutlined /> Create
-          </Button>
+          {!hideCreateBtn ? (
+            <Button
+              style={{ marginLeft: 10 }}
+              disabled={loading}
+              type="primary"
+              onClick={onCreateClick}
+            >
+              <PlusOutlined /> Create
+            </Button>
+          ) : (
+            ""
+          )}
         </>
       }
     >

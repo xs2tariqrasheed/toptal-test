@@ -17,7 +17,7 @@ const Login = () => {
       await login(values, dispatch);
     },
     false,
-    true
+    false
   );
 
   return (

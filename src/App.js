@@ -18,6 +18,9 @@ import {
 import Locations from "./features/Locations";
 import Models from "./features/Models";
 import Bikes from "./features/Bikes";
+import { MANAGER, REGULAR } from "./constants";
+import Users from "./features/Users";
+import Bookings from "./features/Bookings";
 
 function App() {
   const dispatch = useDispatch();
@@ -72,7 +75,7 @@ function App() {
 
   return (
     <Router>
-      <AppLayout>
+      <AppLayout user={user}>
         <Switch>
           <Route exact path="/">
             <Home />
@@ -88,6 +91,15 @@ function App() {
           </Route>
           <Route path="/admin/locations">
             <Locations />
+          </Route>{" "}
+          <Route path="/admin/bookings">
+            <Bookings />
+          </Route>
+          <Route path="/admin/users/regular">
+            <Users userType={REGULAR} />
+          </Route>
+          <Route path="/admin/users/manager">
+            <Users userType={MANAGER} />
           </Route>
           <Route path="/" render={({ location }) => "404"} />
         </Switch>

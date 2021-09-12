@@ -31,7 +31,7 @@ export const registerUser = async (data) => {
     if (data.type === REGULAR) {
       feedbackMessage = "Regular user is created successfully";
     } else if (data.type === MANAGER) {
-      feedbackMessage = "Manager user is created successfully";
+      feedbackMessage = "Manager is created successfully";
     }
     message.success(feedbackMessage);
     return user;
@@ -98,7 +98,7 @@ export const updateUser = async ({ oldEmail, oldPassword, data }) => {
       currentUser.email,
       currentUser.password
     );
-    message.success("User deleted successfully!");
+    message.success("User updated successfully!");
   } catch (error) {
     console.error(error.message);
   }

@@ -49,10 +49,11 @@ import {
 } from "../Colors/colorsSlice";
 import { selectUser } from "../App/appSlice";
 import uuid from "../../utils/uuid";
+import { MANAGER, REGULAR } from "../../constants";
 
 const { RangePicker } = DatePicker;
 
-function Bikes() {
+function Bikes({ userId }) {
   const dispatch = useDispatch();
 
   const user = useSelector(selectUser);
@@ -60,6 +61,7 @@ function Bikes() {
   // bikes
   const bikes = useSelector(selectBikes);
   const listLoading = useSelector(selectBikesLoading);
+
   const bikeToBeEdited = useSelector(selectBikeToBeEdited);
   const shouldShowNewlyAddedRowFeedback = useSelector(
     selectShouldShowNewlyAddedRowFeedback
@@ -146,93 +148,98 @@ function Bikes() {
     model: modelList.find((model) => model.id === item.modelId),
   }));
 
-  console.log(bikeToBeBooked, "?????????????");
-
   return (
     <>
       {/* regular */}
-      <Modal
-        destroyOnClose
-        onCancel={hideModalBookModal}
-        visible={!!bikeToBeBooked}
-        title={`Book ${bikeToBeBooked?.name} bike`}
-        footer={null}
-      >
-        <Form
-          layout="vertical"
-          name="bookingForm"
-          onFinish={(values) =>
-            createBooking({
-              startDate: values.bookingDates[0].format("DD-MM-YYYY"),
-              endDate: values.bookingDates[1].format("DD-MM-YYYY"),
-              renterId: user.userId,
-              bikeId: bikeToBeBooked.id,
-            })
-          }
-        >
-          <Form.Item
-            label="Booking Dates"
-            name="bookingDates"
-            rules={[{ required: true, message: "Required!" }]}
+      {user?.type === REGULAR ? (
+        <>
+          <Modal
+            destroyOnClose
+            onCancel={hideModalBookModal}
+            visible={!!bikeToBeBooked}
+            title={userId ? "Bikes" : `Book ${bikeToBeBooked?.name} bike`}
+            footer={null}
           >
-            <RangePicker
-              disabledDate={(current) =>
-                current && current < moment().subtract(1, "days").endOf("day")
+            <Form
+              layout="vertical"
+              name="bookingForm"
+              onFinish={(values) =>
+                createBooking({
+                  startDate: values.bookingDates[0].format("YYYY-MM-DD"),
+                  endDate: values.bookingDates[1].format("YYYY-MM-DD"),
+                  renterId: user.userId,
+                  bikeId: bikeToBeBooked.id,
+                })
               }
-              style={{ width: "100%" }}
-              size="large"
-            />
-          </Form.Item>
-
-          <Form.Item style={{ marginTop: 50 }}>
-            <Button
-              size="large"
-              block
-              loading={bookingLoading}
-              className="float-right"
-              type="primary"
-              htmlType="submit"
             >
-              BOOK THIS BIKE
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-      <List
-        grid={{ gutter: 16, column: 4 }}
-        dataSource={bikeList.filter((item) => item.available)}
-        renderItem={(item) => (
-          <List.Item>
-            <Card
-              title={item.name}
-              extra={
-                <Button
-                  onClick={() =>
-                    dispatch(setBikeToBeBooked({ bikeId: item.id }))
+              <Form.Item
+                label="Booking Dates"
+                name="bookingDates"
+                rules={[{ required: true, message: "Required!" }]}
+              >
+                <RangePicker
+                  disabledDate={(current) =>
+                    current &&
+                    current < moment().subtract(1, "days").endOf("day")
                   }
-                  size="small"
+                  style={{ width: "100%" }}
+                  size="large"
+                />
+              </Form.Item>
+
+              <Form.Item style={{ marginTop: 50 }}>
+                <Button
+                  size="large"
+                  block
+                  loading={bookingLoading}
+                  className="float-right"
                   type="primary"
+                  htmlType="submit"
                 >
-                  Book
+                  BOOK THIS BIKE
                 </Button>
-              }
-            >
-              <List
-                size="small"
-                header={null}
-                footer={null}
-                bordered
-                dataSource={[
-                  `${item.color.name} Color`,
-                  `${item.model.name} Model`,
-                  `${item.location.name} Location`,
-                ]}
-                renderItem={(item) => <List.Item>{item}</List.Item>}
-              />
-            </Card>
-          </List.Item>
-        )}
-      />
+              </Form.Item>
+            </Form>
+          </Modal>
+          <List
+            grid={{ gutter: 16, column: 4 }}
+            dataSource={bikeList.filter((item) => item.available)}
+            renderItem={(item) => (
+              <List.Item>
+                <Card
+                  title={item.name}
+                  extra={
+                    <Button
+                      onClick={() =>
+                        dispatch(setBikeToBeBooked({ bikeId: item.id }))
+                      }
+                      size="small"
+                      type="primary"
+                    >
+                      Book
+                    </Button>
+                  }
+                >
+                  <List
+                    size="small"
+                    header={null}
+                    footer={null}
+                    bordered
+                    dataSource={[
+                      `${item?.color?.name} Color`,
+                      `${item?.model?.name} Model`,
+                      `${item?.location?.name} Location`,
+                    ]}
+                    renderItem={(item) => <List.Item>{item}</List.Item>}
+                  />
+                </Card>
+              </List.Item>
+            )}
+          />
+        </>
+      ) : (
+        ""
+      )}
       {/* manager */}
       <Modal
         destroyOnClose
@@ -252,6 +259,7 @@ function Bikes() {
         />
       </Modal>
       <TableCard
+        hideCreateBtn={!!userId}
         title="Manage Bikes"
         onSearch={onSearch}
         loading={listLoading || dataLoading}

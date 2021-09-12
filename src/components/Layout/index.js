@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Avatar, Popover, Button } from "antd";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -55,6 +55,36 @@ class AppLayout extends React.Component {
                 onClick: this.toggle,
               }
             )}
+            <Popover
+              placement="bottom"
+              title={this.props.user?.email}
+              content={
+                <Button
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = "/auth/login";
+                  }}
+                  size="small"
+                  type="link"
+                >
+                  Logout
+                </Button>
+              }
+              trigger="click"
+            >
+              <Avatar
+                style={{
+                  // color: "#f56a00",
+                  // backgroundColor: "#fde3cf",
+                  float: "right",
+                  marginTop: 15,
+                  marginRight: 15,
+                  cursor: "pointer",
+                }}
+              >
+                {this.props.user?.email?.slice(0, 1).toUpperCase()}
+              </Avatar>
+            </Popover>
           </Header>
           <Content
             className="site-layout-background shadow"
