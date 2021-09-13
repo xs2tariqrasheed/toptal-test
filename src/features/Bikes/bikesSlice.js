@@ -8,11 +8,18 @@ const initialState = {
   loading: false,
   search: "",
   shouldShowNewlyAddedRowFeedback: false,
+  ratings: [],
+  ratingLoading: [],
 };
 
 export const fetchBikes = createAsyncThunk(
   "bikes/fetchBikes",
   async () => await fetchDocs("bikes")
+);
+
+export const fetchRatings = createAsyncThunk(
+  "bikes/fetchRatings",
+  async () => await fetchDocs("ratings")
 );
 
 export const bikesSlice = createSlice({
@@ -59,11 +66,20 @@ export const bikesSlice = createSlice({
         state.loading = false;
         state.data = action.payload.map((item) => ({
           ...item,
-          searchText: constructSearchText(item),
           shouldEdit: !!state.data.find(
             (prevItem) => prevItem.shouldEdit && prevItem.id === item.id
           ),
         }));
+      })
+      .addCase(fetchRatings.pending, (state) => {
+        state.ratingLoading = true;
+      })
+      .addCase(fetchRatings.rejected, (state) => {
+        state.ratingLoading = false;
+      })
+      .addCase(fetchRatings.fulfilled, (state, action) => {
+        state.ratingLoading = false;
+        state.ratings = action.payload;
       });
   },
 });
@@ -80,10 +96,12 @@ export const {
 export const selectBikes = ({ bikes: { data, search } }) =>
   search
     ? data.filter((item) =>
-        item.searchText.includes(search.trim().toLowerCase())
+        constructSearchText(item).includes(search.trim().toLowerCase())
       )
     : data;
 export const selectBikesLoading = (state) => state.bikes.loading;
+export const selectRatingLoading = (state) => state.bikes.ratingLoading;
+export const selectRatings = (state) => state.bikes.ratings;
 export const selectShouldShowNewlyAddedRowFeedback = (state) =>
   state.bikes.shouldShowNewlyAddedRowFeedback;
 export const selectBikeToBeEdited = (state) =>

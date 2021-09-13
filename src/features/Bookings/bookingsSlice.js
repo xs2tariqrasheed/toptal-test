@@ -34,7 +34,7 @@ export const bookingsSlice = createSlice({
         state.loading = false;
         state.data = action.payload.map((item) => ({
           ...item,
-          searchText: constructSearchText(item),
+
           shouldEdit: !!state.data.find(
             (prevItem) => prevItem.shouldEdit && prevItem.id === item.id
           ),
@@ -48,7 +48,7 @@ export const { setSearch } = bookingsSlice.actions;
 export const selectBookings = ({ bookings: { data, search } }) =>
   search
     ? data.filter((item) =>
-        item.searchText.includes(search.trim().toLowerCase())
+        constructSearchText(item).includes(search.trim().toLowerCase())
       )
     : data;
 export const selectBookingsLoading = (state) => state.bookings.loading;

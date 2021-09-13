@@ -4,8 +4,11 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
+  AntDesignOutlined,
+  BgColorsOutlined,
+  UnorderedListOutlined,
+  GlobalOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 
 import "./style.css";
@@ -39,33 +42,26 @@ const AppLayout = (props) => {
           }}
           theme="light"
           mode="inline"
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={[history.location.pathname]}
         >
           <Divider />
           {user.type === MANAGER ? (
             <>
-              <Menu.Item key="/admin/bikes" icon={<UserOutlined />}>
+              <Menu.Item key="/admin/bikes" icon={<AntDesignOutlined />}>
                 Bikes
               </Menu.Item>
-              <Menu.Item key="/admin/colors" icon={<UserOutlined />}>
+              <Menu.Item key="/admin/colors" icon={<BgColorsOutlined />}>
                 Colors
               </Menu.Item>
-              <Menu.Item key="/admin/models" icon={<UserOutlined />}>
+              <Menu.Item key="/admin/models" icon={<UnorderedListOutlined />}>
                 Bike Models
               </Menu.Item>
-              <Menu.Item key="/admin/locations" icon={<UserOutlined />}>
+              <Menu.Item key="/admin/locations" icon={<GlobalOutlined />}>
                 Locations
-              </Menu.Item>
-              <Divider />
-              <Menu.Item key="/admin/bookings" icon={<UserOutlined />}>
-                Bookings
               </Menu.Item>
               <Divider />
               <Menu.Item key="/admin/users/regular" icon={<UserOutlined />}>
                 Users
-              </Menu.Item>
-              <Menu.Item key="/admin/users/manager" icon={<UserOutlined />}>
-                Managers
               </Menu.Item>
             </>
           ) : (
@@ -74,10 +70,10 @@ const AppLayout = (props) => {
 
           {user.type === REGULAR ? (
             <>
-              <Menu.Item key="/bikes" icon={<UserOutlined />}>
+              <Menu.Item key="/bikes" icon={<AntDesignOutlined />}>
                 Bikes
               </Menu.Item>
-              <Menu.Item key="/bookings" icon={<UserOutlined />}>
+              <Menu.Item key="/bookings" icon={<CalendarOutlined />}>
                 My Bookings
               </Menu.Item>
             </>

@@ -53,7 +53,9 @@ export const login = async (data, dispatch) => {
     const user = { ...data, ...profile };
     dispatch(setUser(user));
     localStorage.setItem("user", JSON.stringify(user));
+
     message.success("Login successfully!");
+    return user;
   } catch (error) {
     console.error(error);
     if (error.code === "auth/user-not-found") {

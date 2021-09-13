@@ -7,6 +7,7 @@ import useLoading from "../../hooks/useLoading";
 import { login } from "../../utils/auth";
 
 import styles from "./Login.module.css";
+import { REGULAR } from "../../constants";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -14,7 +15,12 @@ const Login = () => {
 
   const { loading, func: onFinish } = useLoading(
     async (values) => {
-      await login(values, dispatch);
+      const user = await login(values, dispatch);
+      if (user.type === REGULAR) {
+        history.push("/bikes");
+      } else {
+        history.push("/admin/bikes");
+      }
     },
     false,
     false

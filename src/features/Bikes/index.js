@@ -8,6 +8,9 @@ import {
   Form,
   DatePicker,
   Select,
+  Divider,
+  Popover,
+  Rate,
 } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -32,6 +35,9 @@ import {
   selectBikeToBeBooked,
   unsetBikeToBeBooked,
   setBikeToBeBooked,
+  selectRatings,
+  selectRatingLoading,
+  fetchRatings,
 } from "./bikesSlice";
 import {
   fetchModels,
@@ -82,12 +88,17 @@ function Bikes({ userId }) {
   const colorList = useSelector(selectColors);
   const colorListLoading = useSelector(selectColorsLoading);
 
+  // ratings
+  const ratings = useSelector(selectRatings);
+  const ratingListLoading = useSelector(selectRatingLoading);
+
   const [visible, setVisible] = useState(false);
 
   // filters
   const [modelIdFilter, setModelIdFilter] = useState(null);
   const [colorIdFilter, setColorIdFilter] = useState(null);
   const [locationIdFilter, setLocationIdFilter] = useState(null);
+  const [ratingFilter, setRatingFilter] = useState(null);
 
   const { loading: deleteLoading, func: deleteBike } = useLoading(
     async (id) => {
@@ -116,10 +127,22 @@ function Bikes({ userId }) {
     }
   );
 
+  const { loading: ratingLoading, func: rateBike } = useLoading(
+    async (data) => {
+      await setDoc("/ratings/" + user.userId + data.id, {
+        bikeId: data.id,
+        rating: data.rating,
+      });
+      message.success("Rating saved!");
+      fetchBikeList();
+    }
+  );
+
   function fetchBikeList() {
     dispatch(fetchModels());
     dispatch(fetchColors());
     dispatch(fetchLocations());
+    dispatch(fetchRatings());
     dispatch(fetchBikes());
   }
 
@@ -152,7 +175,21 @@ function Bikes({ userId }) {
     color: colorList.find((color) => color.id === item.colorId),
     location: locationList.find((location) => location.id === item.locationId),
     model: modelList.find((model) => model.id === item.modelId),
+    rating: (() => {
+      const bikeRatings = ratings.filter((r) => r.bikeId === item.id);
+      if (bikeRatings.length) {
+        let sum = 0;
+        bikeRatings.forEach((r) => {
+          sum += r.rating;
+        });
+        console.log(sum);
+        return Math.round(sum / bikeRatings.length);
+      }
+      return 0;
+    })(),
   }));
+
+  console.log(ratings, "???? ratings");
 
   return (
     <>
@@ -256,28 +293,41 @@ function Bikes({ userId }) {
                   }))}
                   allowClear
                 />
+                <Select
+                  onSelect={(ratingValue) => setRatingFilter(ratingValue)}
+                  onClear={() => setRatingFilter(null)}
+                  dropdownMatchSelectWidth={false}
+                  style={{ width: 150, marginRight: 10 }}
+                  placeholder="Average Rating"
+                  options={new Array(5).fill(0).map((_, index) => ({
+                    label: index + 1,
+                    value: index + 1,
+                  }))}
+                  allowClear
+                />
               </>
             }
           >
             <List
-              loading={listLoading || dataLoading}
+              loading={
+                listLoading || dataLoading || ratingLoading || ratingListLoading
+              }
               grid={{ gutter: 16, column: 4 }}
               dataSource={(() => {
-                let list = bikeList.filter((item) => item.available);
+                let list = bikeList;
                 if (modelIdFilter) {
-                  list = bikeList.filter(
-                    (item) => item.model.id === modelIdFilter
-                  );
+                  list = list.filter((item) => item.model.id === modelIdFilter);
                 }
                 if (colorIdFilter) {
-                  list = bikeList.filter(
-                    (item) => item.color.id === colorIdFilter
-                  );
+                  list = list.filter((item) => item.color.id === colorIdFilter);
                 }
                 if (locationIdFilter) {
-                  list = bikeList.filter(
+                  list = list.filter(
                     (item) => item.location.id === locationIdFilter
                   );
+                }
+                if (ratingFilter) {
+                  list = list.filter((item) => item.rating === ratingFilter);
                 }
                 return list;
               })()}
@@ -286,15 +336,20 @@ function Bikes({ userId }) {
                   <Card
                     title={item.name}
                     extra={
-                      <Button
-                        onClick={() =>
-                          dispatch(setBikeToBeBooked({ bikeId: item.id }))
+                      <Popover
+                        trigger="click"
+                        content={
+                          <Rate
+                            onChange={(value) => {
+                              rateBike({ ...item, rating: value });
+                            }}
+                          />
                         }
-                        size="small"
-                        type="primary"
                       >
-                        Book
-                      </Button>
+                        <Button size="small" type="primary">
+                          Rate this Bike
+                        </Button>
+                      </Popover>
                     }
                   >
                     <List
@@ -309,6 +364,22 @@ function Bikes({ userId }) {
                       ]}
                       renderItem={(item) => <List.Item>{item}</List.Item>}
                     />
+                    <Divider />
+                    <div style={{ textAlign: "center" }}>
+                      Average Rating <Rate disabled value={item.rating} />
+                    </div>
+                    <Divider />
+                    <Button
+                      disabled={!item.available}
+                      block
+                      ghost
+                      onClick={() =>
+                        dispatch(setBikeToBeBooked({ bikeId: item.id }))
+                      }
+                      type="primary"
+                    >
+                      {!item.available ? "Not Available" : "BOOK"}
+                    </Button>
                   </Card>
                 </List.Item>
               )}

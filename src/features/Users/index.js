@@ -88,7 +88,9 @@ function Users({ userType }) {
     dispatch(unsetUserToGetBikes({ userId: userToGetBikes.userId }));
   };
 
-  let usersList = users;
+  let usersList = users.filter(
+    (item) => item.userId !== JSON.parse(localStorage.getItem("user")).userId
+  );
   if (userType === REGULAR && onlyWithBookings) {
     usersList = usersList.filter((user) =>
       bookings.some((b) => b.renterId === user.userId)

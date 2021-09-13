@@ -51,7 +51,6 @@ export const colorSlice = createSlice({
         state.loading = false;
         state.data = action.payload.map((item) => ({
           ...item,
-          searchText: constructSearchText(item),
           shouldEdit: !!state.data.find(
             (prevItem) => prevItem.shouldEdit && prevItem.id === item.id
           ),
@@ -70,7 +69,7 @@ export const {
 export const selectColors = ({ colors: { data, search } }) =>
   search
     ? data.filter((item) =>
-        item.searchText.includes(search.trim().toLowerCase())
+        constructSearchText(item).includes(search.trim().toLowerCase())
       )
     : data;
 export const selectColorsLoading = (state) => state.colors.loading;

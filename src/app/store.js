@@ -8,7 +8,6 @@ import colors from "../features/Colors/colorsSlice";
 import models from "../features/Models/modelsSlice";
 import locations from "../features/Locations/locationsSlice";
 import bookings from "../features/Bookings/bookingsSlice";
-import counterReducer from "../features/counter/counterSlice";
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +19,5 @@ export const store = configureStore({
     bookings,
     locations,
     bikesWithBookings,
-    counter: counterReducer,
   },
 });
