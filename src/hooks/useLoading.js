@@ -5,8 +5,12 @@ const useLoading = (func, initialValue = false, remainTrue = false) => {
   return {
     func: async function () {
       setLoading(true);
-      await func.apply(this, arguments);
-      if (!remainTrue) setLoading(false);
+      try {
+        await func.apply(this, arguments);
+        if (!remainTrue) setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
     },
     loading,
   };
